@@ -1,0 +1,288 @@
+//C4 Solidity Student Performance BT
+pragma solidity ^0.5.0;
+contract Crud {
+struct User {
+uint id;
+string name;
+}
+User[] public users;
+uint public nextId = 0;
+function Create(string memory name) public {
+users.push(User(nextId, name));
+nextId++;
+}
+function Read(uint id) view public returns(uint, string memory) {
+for(uint i=0; i<users.length; i++) {
+    if(users[i].id == id) {
+        return(users[i].id, users[i].name);
+}
+}
+}
+function Update(uint id, string memory name) public {
+for(uint i=0; i<users.length; i++) {
+    if(users[i].id == id) {
+        users[i].name =name;
+}
+}
+}
+function Delete(uint id) public {
+delete users[id];
+}
+function find(uint id) view internal returns(uint) {
+for(uint i=0; i< users.length; i++) {
+    if(users[i].id == id) {
+        return i;
+}
+}
+// if user does not exist then revert back
+revert("User does not exist");
+}
+}
+
+
+//C3 Smart Contract Code BT
+pragma solidity >=0.7.0 <0.9.0;
+contract SimpleBank {
+struct client_account{
+int client_id;
+address client_address;
+uint client_balance_in_ether;
+}
+client_account[] clients;
+int clientCounter;
+address payable manager;
+modifier onlyManager() {
+require(msg.sender == manager, "Only manager can call this!");
+_;
+}
+modifier onlyClients() {
+    bool isclient = false;
+    for(uint i=0;i<clients.length;i++){
+        if(clients[i].client_address == msg.sender){
+            isclient = true;
+            break;
+}
+}
+require(isclient, "Only clients can call this!");
+_;
+}
+constructor() {
+clientCounter = 0;
+}
+receive() external payable { }
+function setManager(address managerAddress) public returns(string
+memory){
+    manager = payable(managerAddress);
+    return "";
+    }
+function joinAsClient() public payable returns(string memory){
+    clients.push(client_account(clientCounter++, msg.sender,
+address(msg.sender).balance));
+return "";
+}
+function deposit() public payable onlyClients{
+    payable(address(this)).transfer(msg.value);
+    }
+function withdraw(uint amount) public payable onlyClients{
+    payable(msg.sender).transfer(amount * 1 ether);
+    }
+function sendInterest() public payable onlyManager{
+    for(uint i=0;i<clients.length;i++){
+address initialAddress = clients[i].client_address;
+payable(initialAddress).transfer(1 ether);
+}
+}
+function getContractBalance() public view returns(uint){
+    return address(this).balance;
+}
+}
+
+
+//DAA Fibonacci
+def non_recursion():
+    a=int(input("Enter the first number of the series "))
+    b=int(input("Enter the second number of the series "))
+    n=int(input("Enter the number of terms needed "))
+    print(a,"\n",b,end="\n")
+    while(n-2):
+        c=a+b
+        a=b
+        b=c
+        print(c,end="\n")
+        n=n-1
+    
+non_recursion()
+
+//Recursion
+def fibonacci(n):
+    if(n <= 1):
+        return n
+    else:
+        return(fibonacci(n-1) + fibonacci(n-2))
+        
+number = int(input("Enter number of terms:"))
+
+print("Fibonacci sequence:")
+
+for i in range(number):
+    print(fibonacci(i))
+    
+    
+    
+//Huffmann encoding
+import heapq
+class node:
+    def __init__(self,freq,symbol,left=None,right=None):
+        self.freq=freq
+        self.symbol=symbol
+        self.left=left
+        self.right=right
+        self.huff=''
+    def __lt__(self,nxt):
+        return self.freq < nxt.freq
+def printNode(node,val=''):
+        newVal=val+str(node.huff)
+        if(node.left):
+            printNode(node.left,newVal)
+        if(node.right):
+            printNode(node.right,newVal)
+        if(not node.left and not node.right):
+            print(f"{node.symbol} ->{newVal}")
+chars=['a','b','c','d','e','f']
+freq=[5,9,12,13,16,45]
+nodes=[]
+for x in range(len(chars)):
+    heapq.heappush(nodes,node(freq[x],chars[x]))
+    
+while(len(nodes)>1):
+    left = heapq.heappop(nodes)
+    right = heapq.heappop(nodes)
+    left.huff=0
+    right.huff=1
+    
+    newNode=node(left.freq+right.freq,left.symbol+right.symbol,left,right)
+    
+    heapq.heappush(nodes,newNode)
+    
+printNode(nodes[0])
+
+
+//Fractional Knapsack
+class item:
+    def __init__(self,value,weight):
+        self.value=value
+        self.weight=weight
+        
+def fractionalKnapsack(W,arr):
+    arr.sort(key=lambda x:(x.value/x.weight),reverse=True)
+    finalvalue=0.0
+    for item in arr:
+        if item.weight<=W:
+            W-=item.weight
+            finalvalue+=item.value
+        else:
+            finalvalue+=item.value*W/item.weight
+    return finalvalue
+if __name__ =="__main__":
+    W=50
+    arr=[item(80,10),item(90,20),item(100,30)]
+    max_val=fractionalKnapsack(W,arr)
+    print(max_val)
+    
+    
+//0-1 Knapsack
+def knapSack(W,wt,val,n):
+    if n==0 or W==0:
+        return 0
+        return knapSack(W,wt,val,n=1)
+    else:
+        return max(val[n-1]+knapSack(W-wt[n-1],wt,val,n-1),knapSack(W,wt,val,n-1))
+val=[60,100,120]
+wt=[10,20,30]
+W=50
+n=len(val)
+print(knapSack(W,wt,val,n))
+
+
+//N-Queen  Problem
+global N
+N = 4
+def printSolution(board):
+
+    for i in range(N):
+
+        for j in range(N):
+
+            print (board[i][j],end=' ')
+
+        print()
+
+
+def isSafe(board, row, col):
+
+    for i in range(col):
+
+        if board[row][i] == 1:
+
+            return False
+
+    for i, j in zip(range(row, -1, -1), range(col, -1, -1)):
+
+        if board[i][j] == 1:
+
+            return False
+
+
+    for i, j in zip(range(row, N, 1), range(col, -1, -1)):
+
+if board[i][j] == 1:
+
+        return False
+
+return True
+
+
+def solveNQUtil(board, col):
+
+    if col >= N:
+
+        return True
+
+    for i in range(N):
+
+if isSafe(board, i, col):
+
+            board[i][col] = 1
+
+
+        if solveNQUtil(board, col + 1) == True:
+
+                return True
+
+            board[i][col] = 0
+
+return False
+
+
+def solveNQ():
+
+    board = [ [0, 0, 0, 0],
+
+            [0, 0, 0, 0],
+
+            [0, 0, 0, 0],
+
+            [0, 0, 0, 0]]
+
+
+    if solveNQUtil(board, 0) == False:
+
+        print ("Solution does not exist")
+
+        return False
+
+
+    printSolution(board)
+
+    return True
+
